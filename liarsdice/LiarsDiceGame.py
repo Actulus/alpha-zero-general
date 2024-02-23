@@ -17,7 +17,7 @@ Date: Feb 23, 2024.
 class LiarsDiceGame(Game):
     """Class to represent the game of LiarsDice."""
 
-    def __init__(self, n=2):
+    def __init__(self, n=5):
         """Initialize the game with the number of dice per player."""
         
         self.n = n  # Number of dice per player
@@ -31,7 +31,7 @@ class LiarsDiceGame(Game):
     def getBoardSize(self):
         """Return the board size."""
 
-        return (2, self.n)
+        return (self.n, 2)
 
     def getActionSize(self):
         """Returns the number of possible actions
