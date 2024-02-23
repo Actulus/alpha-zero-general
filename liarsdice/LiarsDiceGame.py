@@ -31,7 +31,7 @@ class LiarsDiceGame(Game):
     def getBoardSize(self):
         """Return the board size."""
 
-        return (self.n, 2)
+        return 2 * self.n
 
     def getActionSize(self):
         """Returns the number of possible actions
@@ -62,8 +62,8 @@ class LiarsDiceGame(Game):
     def getGameEnded(self, board, player):
         """Return 1 if the game is over and the current player wins, -1 if the game is over and the current player loses, 0 otherwise."""
 
-        if board.check_game_end():
-            return 1 if board.get_winner() == player else -1
+        if self.logic.check_game_end():
+            return 1 if self.logic.get_winner() == player else -1
         return 0  # Game not ended
 
     def getCanonicalForm(self, board, player):
@@ -78,6 +78,11 @@ class LiarsDiceGame(Game):
 
         current_bid = self.logic.get_current_bid()
         return "Current bid: {} - Player 1 dice: {}, Player 2 dice: {}".format(current_bid, board[0], board[1])
+
+    def getDiceSize(self):
+        """Return the number of dice per player."""
+
+        return self.n
 
     @staticmethod
     def display(board):
