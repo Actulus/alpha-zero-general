@@ -76,3 +76,34 @@ class Board:
             if dice_count > 0:
                 return player
         return None  # In case of an unexpected condition
+
+    def get_board_state(self):
+        """Return the current board state."""
+        
+        return self.player_dice_values
+    
+    def get_valid_moves(self, current_bid, player_dice_values):
+        """Return a list of valid moves for the current player."""
+        
+        valid_moves = [0] * 7
+        for i in range(1, 7):
+            if self.make_bid(current_bid, (current_bid[0] + 1, i)):
+                valid_moves[i] = 1
+        valid_moves[0] = self.challenge_bid(current_bid, player_dice_values)
+        return valid_moves
+    
+    def apply_action(self, current_bid, action, player_dice_values):
+        """Apply the specified action to the current game state."""
+        
+        if action == "challenge":
+            result = self.challenge_bid(self.current_bid, self.player_dice_values)
+            # Assuming challenge_bid updates the game state as necessary
+            return result
+        else:
+            # action is a bid in the form of a tuple (quantity, face_value)
+            is_valid = self.make_bid(self.current_bid, action)
+            if is_valid:
+                self.current_bid = action  # Update the current bid
+                return "bid made"
+            else:
+                return "invalid bid"
