@@ -1,26 +1,30 @@
-import sys
-sys.path.append('..')
-from tensorflow.keras.models import *
-from tensorflow.keras.layers import *
-from tensorflow.keras.optimizers import *
+from tensorflow import keras  # noqa: F401
+
+from keras.models import Model
+from keras.layers import Input, Dense, Flatten, Dropout
+from keras.optimizers import Adam
+import keras.regularizers as regularizers
+
 
 class LiarsDiceNNet():
+    """LiarsDiceNNet class"""
+
     def __init__(self, game, args):
-        self.dice_size = game.getDiceSize()  # Assuming getDiceSize is a method that returns the size of the dice array
+        """Initialize the neural network with the game and arguments."""
+
+        self.input_shape = (game.getBoardSize(),)  # Adjusted to represent full game state
         self.action_size = game.getActionSize()
         self.args = args
 
-        # Neural Net
-        self.input_dice = Input(shape=(self.dice_size,))  # Input layer for dice state
-
-        x = Reshape((self.dice_size, 1))(self.input_dice)  # Reshape for dense layer input
-        x = Dense(args.hidden1, activation='relu')(x)
-        x = Dropout(args.dropout)(x)
-        x = Dense(args.hidden2, activation='relu')(x)
-        x = Dropout(args.dropout)(x)
+        self.input_layer = Input(shape=self.input_shape)
+        x = Dense(128, activation='relu', kernel_regularizer=regularizers.l2(0.001))(self.input_layer)
+        x = Dropout(0.3)(x)
+        x = Dense(128, activation='relu', kernel_regularizer=regularizers.l2(0.001))(x)
+        x = Dropout(0.3)(x)
         x = Flatten()(x)
-        self.pi = Dense(self.action_size, activation='softmax', name='pi')(x)  # Output layer for action probabilities
-        self.v = Dense(1, activation='tanh', name='v')(x)  # Output layer for state value estimation
+        self.pi = Dense(self.action_size, activation='softmax', name='pi')(x)
+        self.v = Dense(1, activation='tanh', name='v')(x)
 
-        self.model = Model(inputs=self.input_dice, outputs=[self.pi, self.v])
-        self.model.compile(loss=['categorical_crossentropy','mean_squared_error'], optimizer=Adam(args.lr))
+        self.model = Model(inputs=self.input_layer, outputs=[self.pi, self.v])
+        self.model.compile(loss=['categorical_crossentropy', 'mean_squared_error'],
+                           optimizer=Adam(lr=args.lr))
