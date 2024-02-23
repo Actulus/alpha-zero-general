@@ -107,3 +107,13 @@ class Board:
                 return "bid made"
             else:
                 return "invalid bid"
+    
+    def get_player_dice(self, player):
+        """Return the dice values for the specified player."""
+        
+        return self.player_dice_values[player]
+    
+    def get_current_bid(self):
+        """Return the current bid."""
+        
+        return self.current_bid
