@@ -10,11 +10,7 @@ from liarsdice.keras.NNet import NNetWrapper as nn
 from utils import *
 ```
 
-and the first line of ```__main__``` to
-```python
-g = LiarsDiceGame()
-```
- Make similar changes to ```pit.py```.
+Make similar changes to ```pit.py```.
 
 To start training a model for TicTacToe:
 ```bash
