@@ -16,7 +16,7 @@ Date: Feb 23, 2024.
 
 class LiarsDiceGame(Game):
     """Class to represent the game of LiarsDice."""
-    
+
     def __init__(self, n=2):
         """Initialize the game with the number of dice per player."""
         
@@ -67,14 +67,17 @@ class LiarsDiceGame(Game):
         return 0  # Game not ended
 
     def getCanonicalForm(self, board, player):
-        """Return a copy of the board with the current player's perspective."""
+        """Return the canonical form of the board. In this case, the canonical form is the board itself."""
 
-        return board*player
+        player_dice = self.logic.get_player_dice(player)
+        
+        return np.array(player_dice)
 
     def stringRepresentation(self, board):
         """Return a string representation of the board."""
 
-        return board.tostring()
+        current_bid = self.logic.get_current_bid()
+        return "Current bid: {} - Player 1 dice: {}, Player 2 dice: {}".format(current_bid, board[0], board[1])
 
     @staticmethod
     def display(board):
