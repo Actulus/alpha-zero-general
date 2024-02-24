@@ -19,7 +19,7 @@ class HumanPlayer():
             else:
                 try:
                     quantity, face_value = map(int, input_str.split())
-                    action = self.game.encodeAction(quantity, face_value)
+                    action = self.game.getActionSize() - 2  # Assume second to last action is a bid
                 except ValueError:
                     print('Invalid input format. Please follow the format "quantity face_value" or "-1" for challenge.')
                     continue

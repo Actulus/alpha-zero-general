@@ -19,9 +19,11 @@ class Board:
         """Initialize the board with the number of dice per player."""
 
         self.dice_per_player = dice_per_player
-        
+
         # Initialize players' dice counts. This is a simple representation.
         self.player_dice = [dice_per_player, dice_per_player]
+        self.player_dice_values = {0: [], 1: []}
+        self.current_bid = (0, 0)
 
     def roll_dice(self):
         """Roll the dice for each player and store the values."""
@@ -41,19 +43,22 @@ class Board:
         If the bid value is the same, the bid quantity must be greater.
         """
 
+        # print("current_bid", current_bid)
+        # print("new_bid", new_bid)
+
         if new_bid[0] > current_bid[0] or (
             new_bid[0] == current_bid[0] and new_bid[1] > current_bid[1]
         ):
             return True  # The bid is valid
         return False  # The bid is not valid
 
-    def challenge_bid(self, current_bid, player_dice_values):
+    def challenge_bid(self, current_bid):
         """Determine if the current bid is valid.
         A bid is valid if the total count of the bid value is greater than or equal to the bid quantity.
         """
 
         total_count = sum(
-            value.count(current_bid[1]) for value in player_dice_values.values()
+            value.count(current_bid[1]) for value in self.player_dice_values.values()
         )
         if total_count >= current_bid[0]:
             return "challenger loses"
@@ -79,41 +84,51 @@ class Board:
 
     def get_board_state(self):
         """Return the current board state."""
-        
+
         return self.player_dice_values
-    
-    def get_valid_moves(self, current_bid, player_dice_values):
+
+    def get_valid_moves(self, current_bid):
         """Return a list of valid moves for the current player."""
-        
+
         valid_moves = [0] * 7
         for i in range(1, 7):
+            # print(current_bid)
             if self.make_bid(current_bid, (current_bid[0] + 1, i)):
                 valid_moves[i] = 1
-        valid_moves[0] = self.challenge_bid(current_bid, player_dice_values)
+        valid_moves[0] = self.challenge_bid(current_bid)
         return valid_moves
-    
-    def apply_action(self, current_bid, action, player_dice_values):
+
+    def decode_action_to_bid(self, action):
+        """Decode the action to a bid."""
+
+        if action == 0:
+            return -1
+        return (action, (action - 1) % 6 + 1)
+
+    def apply_action(self, current_bid, action, player):
         """Apply the specified action to the current game state."""
-        
-        if action == "challenge":
-            result = self.challenge_bid(self.current_bid, self.player_dice_values)
-            # Assuming challenge_bid updates the game state as necessary
-            return result
-        else:
-            # action is a bid in the form of a tuple (quantity, face_value)
-            is_valid = self.make_bid(self.current_bid, action)
-            if is_valid:
-                self.current_bid = action  # Update the current bid
-                return "bid made"
+
+        if action == -1:
+            # Challenge
+            result = self.challenge_bid(self.current_bid)
+            if result == "challenger loses":
+                self.remove_dice(player)
             else:
-                return "invalid bid"
-    
+                self.remove_dice(3 - player)
+        else:
+            bid = self.decode_action_to_bid(action)
+            is_valid = self.make_bid(self.current_bid, bid)
+            if is_valid:
+                self.current_bid = action
+            else:
+                raise ValueError("Invalid bid")
+
     def get_player_dice(self, player):
         """Return the dice values for the specified player."""
-        
+
         return self.player_dice_values[player]
-    
+
     def get_current_bid(self):
         """Return the current bid."""
-        
+
         return self.current_bid

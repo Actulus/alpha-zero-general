@@ -43,8 +43,9 @@ class LiarsDiceGame(Game):
         """Apply the action to the board and return the next board state."""
 
         # Apply action to the game logic
+        # print("action", action)
         self.logic.apply_action(
-            player, action
+            self.logic.current_bid, action, player
         )
 
         # Calculate next player
@@ -57,7 +58,7 @@ class LiarsDiceGame(Game):
     def getValidMoves(self, board, player):
         """Return a binary vector of valid moves for the current player."""
 
-        return self.logic.get_valid_moves(player)
+        return self.logic.get_valid_moves(current_bid=self.logic.current_bid)
 
     def getGameEnded(self, board, player):
         """Return 1 if the game is over and the current player wins, -1 if the game is over and the current player loses, 0 otherwise."""
