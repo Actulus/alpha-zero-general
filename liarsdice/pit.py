@@ -1,6 +1,8 @@
+
+import Arena
 import sys
 sys.path.append('..')
-import Arena
+
 
 
 from liarsdice.LiarsDiceGame import LiarsDiceGame as Game
