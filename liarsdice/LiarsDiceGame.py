@@ -22,6 +22,7 @@ class LiarsDiceGame(Game):
         
         self.n = n  # Number of dice per player
         self.logic = Board(n)
+        self.players = self.logic.players
 
     def getInitBoard(self):
         """Return initial board state."""
@@ -48,8 +49,8 @@ class LiarsDiceGame(Game):
             self.logic.current_bid, action, player
         )
 
-        # Calculate next player
-        next_player = 3 - player
+        # Calculate next player, there are only two players
+        next_player = 1 - player # modify according to the number of players
         return (
             self.logic.get_board_state(),
             next_player,

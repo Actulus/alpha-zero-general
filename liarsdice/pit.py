@@ -22,9 +22,9 @@ human_vs_human = True
 g = Game(5)
 hp = HumanPlayer(g).play
 
-n1p = hp
-player2 = hp
+player1 = HumanPlayer(g).play
+player2 = HumanPlayer(g).play
 
-arena = Arena.Arena(n1p, player2, g, display=Game.display)
-print("hi")
+arena = Arena.Arena(player1, player2, g, display=Game.display)
+
 print(arena.playGames(2, verbose=True))
